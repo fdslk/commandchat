@@ -19,7 +19,7 @@ func CreateCompletionsRequest(question string) ([]byte, error) {
 			"Human", "AI",
 		},
 		Prompt:           question,
-		MaxTokens:        200,
+		MaxTokens:        1000,
 		FrequencyPenalty: 0.0,
 		PresencePenalty:  0.7,
 	}

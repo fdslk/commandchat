@@ -3,4 +3,4 @@
 ## how to use it
 
 * run `export API_KEY="your api key"`
-* run `commandchat chat -p "question"`
+* run `commandchat chat"`
