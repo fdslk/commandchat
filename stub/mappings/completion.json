@@ -1,0 +1,10 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/v1/completions"
+    },
+    "response": {
+        "status": 200,
+        "bodyFileName": "../__files/chat-message.json"
+    }
+}
