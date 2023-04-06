@@ -13,7 +13,7 @@ import (
 	commandchat "zqf.com/commandchat/commandchatChannel"
 )
 
-// var prompt string
+var currentChatHistory = make(map[string]string)
 
 // chatCmd represents the chat command
 var chatCmd = &cobra.Command{
@@ -75,7 +75,5 @@ func AIOutPut(answer string) {
 }
 
 func init() {
-	// chatCmd.Flags().StringVarP(&prompt, "prompt", "p", "", "the question you want to ask chatgpt")
-	// chatCmd.MarkFlagRequired("prompt")
 	rootCmd.AddCommand(chatCmd)
 }
