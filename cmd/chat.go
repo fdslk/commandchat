@@ -39,7 +39,10 @@ var chatCmd = &cobra.Command{
 			case "":
 				continue
 			default:
-				newRequestBytes, err := commandchat.CreateCompletionsRequest(question)
+				var history []commandchat.Message
+				history = convert2HistoryMessage(currentChatHistory)
+
+				newRequestBytes, err := commandchat.CreateCompletionsRequest(question, history)
 
 				if err != nil {
 					fmt.Println("error occurred:", err)

@@ -1,6 +1,10 @@
 package commandchat
 
-const COMPLETIONS_URL = "https://api.openai.com/v1/completions"
+const (
+	COMPLETIONS_URL = "https://api.openai.com/v1/completions"
+	USER            = "user"
+	ASSISTANT       = "assistant"
+)
 
 type ClientConfigration struct {
 	apiKey string
@@ -21,6 +25,13 @@ type Message struct {
 }
 
 type StrArray []string
+
+//   messages=[
+//         {"role": "system", "content": "You are a helpful assistant."},
+//         {"role": "user", "content": "Who won the world series in 2020?"},
+//         {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
+//         {"role": "user", "content": "Where was it played?"}
+//     ]
 
 type CompletionsRequest struct {
 	Model            string            `json:"model,omitempty"`
@@ -60,4 +71,27 @@ type CompletionsResponse struct {
 	} `json:"usage,omitempty"`
 
 	Error Error `json:"error,omitempty"`
+}
+
+func Convert2HistoryMessage(currentHistoryMap map[string][]interface{}) []Message {
+	assistantHistory := ReverseSlice(currentHistoryMap[ASSISTANT])
+	userHistory := ReverseSlice(currentHistoryMap[USER])
+	var messages []Message
+	if currentHistoryMap == nil {
+		return messages
+	}
+	if len(assistantHistory) < 2 && len(userHistory) < 2 {
+
+		messages = append(messages, Message{USER, userHistory[0].(string)})
+		messages = append(messages, Message{ASSISTANT, assistantHistory[0].(string)})
+		return messages
+	}
+
+	if len(userHistory) <= len(assistantHistory) {
+		for index, history := range userHistory {
+			messages = append(messages, Message{USER, history.(string)}, Message{ASSISTANT, assistantHistory[index+1].(string)})
+		}
+	}
+
+	return messages
 }

@@ -9,10 +9,11 @@ import (
 	"os"
 )
 
-func CreateCompletionsRequest(question string) ([]byte, error) {
+func CreateCompletionsRequest(question string, messages []Message) ([]byte, error) {
 
 	newRequest := CompletionsRequest{
 		Model:       "text-davinci-003",
+		Messages:    messages,
 		TopP:        1,
 		Temperature: 0.9,
 		Stop: StrArray{
