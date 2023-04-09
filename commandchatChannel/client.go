@@ -56,6 +56,11 @@ func Chat(requestBytes []byte) (http.Response, error) {
 	apiKey := os.Getenv("API_KEY")
 	request, err := http.NewRequest(http.MethodPost, COMPLETIONS_URL, bytes.NewBuffer(requestBytes))
 
+	if err != nil {
+		fmt.Println("Error sending request:", err)
+		return http.Response{}, err
+	}
+
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Authorization", "Bearer "+apiKey)
 

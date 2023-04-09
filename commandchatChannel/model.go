@@ -73,11 +73,11 @@ type CompletionsResponse struct {
 	Error Error `json:"error,omitempty"`
 }
 
-func Convert2HistoryMessage(currentHistoryMap map[string][]interface{}) []Message {
+func Convert2HistoryMessage(currentHistoryMap map[string][]interface{}, firstTalk bool) []Message {
 	assistantHistory := ReverseSlice(currentHistoryMap[ASSISTANT])
 	userHistory := ReverseSlice(currentHistoryMap[USER])
 	var messages []Message
-	if currentHistoryMap == nil {
+	if currentHistoryMap == nil || firstTalk {
 		return messages
 	}
 	if len(assistantHistory) < 2 && len(userHistory) < 2 {
@@ -87,9 +87,15 @@ func Convert2HistoryMessage(currentHistoryMap map[string][]interface{}) []Messag
 		return messages
 	}
 
-	if len(userHistory) <= len(assistantHistory) {
-		for index, history := range userHistory {
+	if len(userHistory) < len(assistantHistory) {
+		for index, history := range userHistory[:2] {
 			messages = append(messages, Message{USER, history.(string)}, Message{ASSISTANT, assistantHistory[index+1].(string)})
+		}
+	}
+
+	if len(userHistory) == len(assistantHistory) {
+		for index, history := range userHistory[:2] {
+			messages = append(messages, Message{USER, history.(string)}, Message{ASSISTANT, assistantHistory[index].(string)})
 		}
 	}
 

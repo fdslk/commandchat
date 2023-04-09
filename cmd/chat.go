@@ -13,7 +13,7 @@ import (
 	commandchat "zqf.com/commandchat/commandchatChannel"
 )
 
-var currentChatHistory = make(map[string]string)
+var currentChatHistory = make(map[string][]interface{})
 
 // chatCmd represents the chat command
 var chatCmd = &cobra.Command{
@@ -24,6 +24,7 @@ var chatCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		scanner := bufio.NewScanner(os.Stdin)
 		quit := false
+		firstTalk := true
 		for !quit {
 			fmt.Print("Input your question (type `quit` to exit): ")
 
@@ -39,8 +40,7 @@ var chatCmd = &cobra.Command{
 			case "":
 				continue
 			default:
-				var history []commandchat.Message
-				history = convert2HistoryMessage(currentChatHistory)
+				history := commandchat.Convert2HistoryMessage(currentChatHistory, firstTalk)
 
 				newRequestBytes, err := commandchat.CreateCompletionsRequest(question, history)
 
@@ -63,7 +63,11 @@ var chatCmd = &cobra.Command{
 					return
 				}
 
-				AIOutPut(response.Choices[0].Text)
+				responseText := response.Choices[0].Text
+				AIOutPut(responseText)
+				firstTalk = false
+				commandchat.UpdateMap(commandchat.USER, question, currentChatHistory)
+				commandchat.UpdateMap(commandchat.ASSISTANT, responseText, currentChatHistory)
 			}
 		}
 	},
