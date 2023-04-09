@@ -1,6 +1,12 @@
 # chatGpt golang command line tool
 
-## how to use it
+![build status](https://github.com/Fdslk/commandchat/actions/workflows/go.yml/badge.svg)
+
+## What is it?
+* It is a command line tool that can be used to chat with gpt, which will send messages with two latest conversation record
+* It is based on golang
+
+## How to use it
 
 * run `export API_KEY="your api key"`
 * run `commandchat chat"`
