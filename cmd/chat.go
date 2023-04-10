@@ -24,7 +24,7 @@ var chatCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		scanner := bufio.NewScanner(os.Stdin)
 		quit := false
-		firstTalk := true
+		// firstTalk := true
 		for !quit {
 			fmt.Print("Input your question (type `quit` to exit): ")
 
@@ -40,9 +40,9 @@ var chatCmd = &cobra.Command{
 			case "":
 				continue
 			default:
-				history := commandchat.Convert2HistoryMessage(currentChatHistory, firstTalk)
+				// history := commandchat.Convert2HistoryMessage(currentChatHistory, firstTalk)
 
-				newRequestBytes, err := commandchat.CreateCompletionsRequest(question, history)
+				newRequestBytes, err := commandchat.CreateCompletionsRequest(question, []commandchat.Message{})
 
 				if err != nil {
 					fmt.Println("error occurred:", err)
@@ -65,7 +65,7 @@ var chatCmd = &cobra.Command{
 
 				responseText := response.Choices[0].Text
 				AIOutPut(responseText)
-				firstTalk = false
+				// firstTalk = false
 				commandchat.UpdateMap(commandchat.USER, question, currentChatHistory)
 				commandchat.UpdateMap(commandchat.ASSISTANT, responseText, currentChatHistory)
 			}
