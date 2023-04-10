@@ -1,8 +1,21 @@
 {
-    "id": "1",
+    "id": "chatcmpl-73jPBL61K3AcKcnUvCOueQxQafs4L",
+    "object": "chat.completion",
+    "created": 1681123877,
+    "model": "gpt-3.5-turbo-0301",
+    "usage": {
+        "prompt_tokens": 14,
+        "completion_tokens": 3,
+        "total_tokens": 17
+    },
     "choices": [
         {
-            "text": "It is a message for wiremock."
+            "message": {
+                "role": "assistant",
+                "content": "\n\nHello there, how may I assist you today?"
+            },
+            "finish_reason": "stop",
+            "index": 0
         }
     ]
 }

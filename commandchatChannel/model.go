@@ -1,15 +1,9 @@
 package commandchat
 
 const (
-	COMPLETIONS_URL = "https://api.openai.com/v1/chat/completions"
-	USER            = "user"
-	ASSISTANT       = "assistant"
+	USER      = "user"
+	ASSISTANT = "assistant"
 )
-
-type ClientConfigration struct {
-	apiKey string
-	org    string
-}
 
 // Error is the error standard response from the API
 type Error struct {
@@ -63,6 +57,7 @@ type CompletionsResponse struct {
 		Index        int         `json:"index,omitempty"`
 		Logprobs     interface{} `json:"logprobs,omitempty"`
 		FinishReason string      `json:"finish_reason,omitempty"`
+		Message      Message     `json:"message,omitempty"`
 	} `json:"choices,omitempty"`
 	Usage struct {
 		PromptTokens     int `json:"prompt_tokens,omitempty"`
@@ -73,29 +68,29 @@ type CompletionsResponse struct {
 	Error Error `json:"error,omitempty"`
 }
 
-func Convert2HistoryMessage(currentHistoryMap map[string][]interface{}, firstTalk bool) []Message {
+// 最下面的是最新的
+// Input your question (type `quit` to exit): 都可以
+// map[assistant:[你好，有什么可以帮您的吗？ 您好，请问您想写一篇什么主题的文章呢？] user:[你好 我想写一篇文章]]
+// {"model":"gpt-3.5-turbo","messages":[{"role":"user","content":"都可以"},{"role":"assistant","content":"您好，请问您想写一篇什么主题的文章呢？"},{"role":"user","content":"我想写一篇文章"},{"role":"assistant","content":"你好，有什么可以帮您的吗？"},{"role":"user","content":"你好"}],"max_tokens":1000,"temperature":0.9,"top_p":1,"stop":["Human","AI"],"presence_penalty":0.7}
+// Response status: 200 OK
+// 您好，请问有什么需要帮助的吗？
+func Convert2HistoryMessage(currentHistoryMap map[string][]interface{}, setting ChatSetting) []Message {
 	assistantHistory := ReverseSlice(currentHistoryMap[ASSISTANT])
 	userHistory := ReverseSlice(currentHistoryMap[USER])
 	var messages []Message
-	if currentHistoryMap == nil || firstTalk {
+	if currentHistoryMap == nil || setting.ModelName != "gpt-3.5-turbo" || len(userHistory) == 0 || len(assistantHistory) == 0 {
 		return messages
 	}
-	if len(assistantHistory) < 2 && len(userHistory) < 2 {
 
-		messages = append(messages, Message{USER, userHistory[0].(string)})
+	if len(assistantHistory) == 1 && len(userHistory) == 1 {
 		messages = append(messages, Message{ASSISTANT, assistantHistory[0].(string)})
+		messages = append(messages, Message{USER, userHistory[0].(string)})
 		return messages
-	}
-
-	if len(userHistory) < len(assistantHistory) {
-		for index, history := range userHistory[:2] {
-			messages = append(messages, Message{USER, history.(string)}, Message{ASSISTANT, assistantHistory[index+1].(string)})
-		}
 	}
 
 	if len(userHistory) == len(assistantHistory) {
 		for index, history := range userHistory[:2] {
-			messages = append(messages, Message{USER, history.(string)}, Message{ASSISTANT, assistantHistory[index].(string)})
+			messages = append(messages, Message{ASSISTANT, assistantHistory[index].(string)}, Message{USER, history.(string)})
 		}
 	}
 

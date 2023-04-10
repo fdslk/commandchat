@@ -24,8 +24,14 @@ var chatCmd = &cobra.Command{
 	it in you mind, don't upload any personal or sensitive data to it`,
 	Run: func(cmd *cobra.Command, args []string) {
 		scanner := bufio.NewScanner(os.Stdin)
+
 		quit := false
-		// firstTalk := true
+		filepath := "Configuration/" + commandchat.FILE_LOCATION
+		setting, err := commandchat.ReadFile(filepath)
+		if err != nil {
+			fmt.Printf("setting reading error %s", err.Error())
+			os.Exit(1)
+		}
 		for !quit {
 			fmt.Print("Input your question (type `quit` to exit): ")
 
@@ -41,9 +47,11 @@ var chatCmd = &cobra.Command{
 			case "":
 				continue
 			default:
-				// history := commandchat.Convert2HistoryMessage(currentChatHistory, firstTalk)
+				fmt.Println(currentChatHistory)
 
-				newRequestBytes, err := commandchat.CreateCompletionsRequest(question, []commandchat.Message{})
+				history := commandchat.Convert2HistoryMessage(currentChatHistory, setting)
+
+				newRequestBytes, err := commandchat.CreateCompletionsRequest(question, history, setting)
 
 				fmt.Println(string(newRequestBytes))
 
@@ -52,7 +60,7 @@ var chatCmd = &cobra.Command{
 					return
 				}
 
-				rawResponse, err := commandchat.Chat(newRequestBytes)
+				rawResponse, err := commandchat.Chat(newRequestBytes, setting)
 
 				if err != nil || rawResponse.Status != "200 OK" {
 					body, _ := io.ReadAll(rawResponse.Body)
@@ -67,9 +75,13 @@ var chatCmd = &cobra.Command{
 					return
 				}
 
-				responseText := response.Choices[0].Text
+				var responseText string
+				if setting.ModelName == "gpt-3.5-turbo" {
+					responseText = response.Choices[0].Message.Content
+				} else {
+					responseText = response.Choices[0].Text
+				}
 				AIOutPut(responseText)
-				// firstTalk = false
 				commandchat.UpdateMap(commandchat.USER, question, currentChatHistory)
 				commandchat.UpdateMap(commandchat.ASSISTANT, responseText, currentChatHistory)
 			}

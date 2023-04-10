@@ -13,3 +13,4 @@
 
 ## Development tip
 * In case openAi locks down your APIKEY or account, you can use the wiremock as your mock server to develop or debug your code. You can run `./startstub.sh`
+* check your wiremock works, input url ` http://localhost:8080/__admin` in your browser
