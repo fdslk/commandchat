@@ -1,7 +1,7 @@
 package commandchat
 
 const (
-	COMPLETIONS_URL = "https://api.openai.com/v1/completions"
+	COMPLETIONS_URL = "https://api.openai.com/v1/chat/completions"
 	USER            = "user"
 	ASSISTANT       = "assistant"
 )

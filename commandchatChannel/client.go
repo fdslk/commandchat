@@ -12,7 +12,7 @@ import (
 func CreateCompletionsRequest(question string, messages []Message) ([]byte, error) {
 
 	newRequest := CompletionsRequest{
-		Model:       "text-davinci-003",
+		Model:       "gpt-3.5-turbo",
 		Messages:    messages,
 		TopP:        1,
 		Temperature: 0.9,

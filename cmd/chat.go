@@ -6,6 +6,7 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"time"
 
@@ -44,6 +45,8 @@ var chatCmd = &cobra.Command{
 
 				newRequestBytes, err := commandchat.CreateCompletionsRequest(question, history)
 
+				fmt.Println(string(newRequestBytes))
+
 				if err != nil {
 					fmt.Println("error occurred:", err)
 					return
@@ -51,8 +54,9 @@ var chatCmd = &cobra.Command{
 
 				rawResponse, err := commandchat.Chat(newRequestBytes)
 
-				if err != nil {
-					fmt.Println("error occurred:", err)
+				if err != nil || rawResponse.Status != "200 OK" {
+					body, _ := io.ReadAll(rawResponse.Body)
+					fmt.Printf("error occurred:%s and the response is %s", err, string(body))
 					return
 				}
 
@@ -76,7 +80,7 @@ var chatCmd = &cobra.Command{
 func AIOutPut(answer string) {
 	for _, c := range answer {
 		fmt.Printf("%c", c)
-		time.Sleep(time.Second / 5)
+		time.Sleep(time.Second / 20)
 	}
 	fmt.Println("")
 }
