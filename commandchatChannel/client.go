@@ -9,20 +9,24 @@ import (
 	"os"
 )
 
-func CreateCompletionsRequest(question string, messages []Message) ([]byte, error) {
+func CreateCompletionsRequest(question string, messages []Message, setting ChatSetting) ([]byte, error) {
 
 	newRequest := CompletionsRequest{
-		Model:       "text-davinci-003",
-		Messages:    messages,
+		Model:       setting.ModelName,
 		TopP:        1,
 		Temperature: 0.9,
 		Stop: StrArray{
 			"Human", "AI",
 		},
-		Prompt:           question,
 		MaxTokens:        1000,
 		FrequencyPenalty: 0.0,
 		PresencePenalty:  0.7,
+	}
+
+	if setting.ModelName == "gpt-3.5-turbo" {
+		newRequest.Messages = append(messages, Message{USER, question})
+	} else {
+		newRequest.Prompt = question
 	}
 
 	newRequestBytes, err := json.Marshal(newRequest)
@@ -52,9 +56,9 @@ func CreateCompletionsResponse(rawResponse http.Response) (response CompletionsR
 	return response, err
 }
 
-func Chat(requestBytes []byte) (http.Response, error) {
+func Chat(requestBytes []byte, setting ChatSetting) (http.Response, error) {
 	apiKey := os.Getenv("API_KEY")
-	request, err := http.NewRequest(http.MethodPost, COMPLETIONS_URL, bytes.NewBuffer(requestBytes))
+	request, err := http.NewRequest(http.MethodPost, setting.ApiUrl, bytes.NewBuffer(requestBytes))
 
 	if err != nil {
 		fmt.Println("Error sending request:", err)

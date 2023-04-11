@@ -6,6 +6,7 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"time"
 
@@ -23,8 +24,14 @@ var chatCmd = &cobra.Command{
 	it in you mind, don't upload any personal or sensitive data to it`,
 	Run: func(cmd *cobra.Command, args []string) {
 		scanner := bufio.NewScanner(os.Stdin)
+
 		quit := false
-		// firstTalk := true
+		filepath := "Configuration/" + commandchat.FILE_NAME
+		setting, err := commandchat.ReadFile(filepath)
+		if err != nil {
+			fmt.Printf("setting reading error %s", err.Error())
+			os.Exit(1)
+		}
 		for !quit {
 			fmt.Print("Input your question (type `quit` to exit): ")
 
@@ -40,19 +47,20 @@ var chatCmd = &cobra.Command{
 			case "":
 				continue
 			default:
-				// history := commandchat.Convert2HistoryMessage(currentChatHistory, firstTalk)
+				history := commandchat.Convert2HistoryMessage(currentChatHistory, setting)
 
-				newRequestBytes, err := commandchat.CreateCompletionsRequest(question, []commandchat.Message{})
+				newRequestBytes, err := commandchat.CreateCompletionsRequest(question, history, setting)
 
 				if err != nil {
 					fmt.Println("error occurred:", err)
 					return
 				}
 
-				rawResponse, err := commandchat.Chat(newRequestBytes)
+				rawResponse, err := commandchat.Chat(newRequestBytes, setting)
 
-				if err != nil {
-					fmt.Println("error occurred:", err)
+				if err != nil || rawResponse.Status != "200 OK" {
+					body, _ := io.ReadAll(rawResponse.Body)
+					fmt.Printf("error occurred:%s and the response is %s", err, string(body))
 					return
 				}
 
@@ -63,9 +71,13 @@ var chatCmd = &cobra.Command{
 					return
 				}
 
-				responseText := response.Choices[0].Text
+				var responseText string
+				if setting.ModelName == "gpt-3.5-turbo" {
+					responseText = response.Choices[0].Message.Content
+				} else {
+					responseText = response.Choices[0].Text
+				}
 				AIOutPut(responseText)
-				// firstTalk = false
 				commandchat.UpdateMap(commandchat.USER, question, currentChatHistory)
 				commandchat.UpdateMap(commandchat.ASSISTANT, responseText, currentChatHistory)
 			}
@@ -76,7 +88,7 @@ var chatCmd = &cobra.Command{
 func AIOutPut(answer string) {
 	for _, c := range answer {
 		fmt.Printf("%c", c)
-		time.Sleep(time.Second / 5)
+		time.Sleep(time.Second / 20)
 	}
 	fmt.Println("")
 }

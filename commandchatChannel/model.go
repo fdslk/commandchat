@@ -1,17 +1,10 @@
 package commandchat
 
 const (
-	COMPLETIONS_URL = "https://api.openai.com/v1/completions"
-	USER            = "user"
-	ASSISTANT       = "assistant"
+	USER      = "user"
+	ASSISTANT = "assistant"
 )
 
-type ClientConfigration struct {
-	apiKey string
-	org    string
-}
-
-// Error is the error standard response from the API
 type Error struct {
 	Message string      `json:"message,omitempty"`
 	Type    string      `json:"type,omitempty"`
@@ -25,13 +18,6 @@ type Message struct {
 }
 
 type StrArray []string
-
-//   messages=[
-//         {"role": "system", "content": "You are a helpful assistant."},
-//         {"role": "user", "content": "Who won the world series in 2020?"},
-//         {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
-//         {"role": "user", "content": "Where was it played?"}
-//     ]
 
 type CompletionsRequest struct {
 	Model            string            `json:"model,omitempty"`
@@ -63,6 +49,7 @@ type CompletionsResponse struct {
 		Index        int         `json:"index,omitempty"`
 		Logprobs     interface{} `json:"logprobs,omitempty"`
 		FinishReason string      `json:"finish_reason,omitempty"`
+		Message      Message     `json:"message,omitempty"`
 	} `json:"choices,omitempty"`
 	Usage struct {
 		PromptTokens     int `json:"prompt_tokens,omitempty"`
@@ -73,29 +60,23 @@ type CompletionsResponse struct {
 	Error Error `json:"error,omitempty"`
 }
 
-func Convert2HistoryMessage(currentHistoryMap map[string][]interface{}, firstTalk bool) []Message {
-	assistantHistory := ReverseSlice(currentHistoryMap[ASSISTANT])
-	userHistory := ReverseSlice(currentHistoryMap[USER])
+func Convert2HistoryMessage(currentHistoryMap map[string][]interface{}, setting ChatSetting) []Message {
+	assistantHistory := currentHistoryMap[ASSISTANT]
+	userHistory := currentHistoryMap[USER]
 	var messages []Message
-	if currentHistoryMap == nil || firstTalk {
+	if currentHistoryMap == nil || setting.ModelName != "gpt-3.5-turbo" || len(userHistory) == 0 || len(assistantHistory) == 0 {
 		return messages
 	}
-	if len(assistantHistory) < 2 && len(userHistory) < 2 {
 
+	if len(assistantHistory) == 1 && len(userHistory) == 1 {
 		messages = append(messages, Message{USER, userHistory[0].(string)})
 		messages = append(messages, Message{ASSISTANT, assistantHistory[0].(string)})
 		return messages
 	}
 
-	if len(userHistory) < len(assistantHistory) {
-		for index, history := range userHistory[:2] {
-			messages = append(messages, Message{USER, history.(string)}, Message{ASSISTANT, assistantHistory[index+1].(string)})
-		}
-	}
-
 	if len(userHistory) == len(assistantHistory) {
-		for index, history := range userHistory[:2] {
-			messages = append(messages, Message{USER, history.(string)}, Message{ASSISTANT, assistantHistory[index].(string)})
+		for index, history := range userHistory[len(userHistory)-2:] {
+			messages = append(messages, Message{USER, history.(string)}, Message{ASSISTANT, assistantHistory[len(assistantHistory)-2:][index].(string)})
 		}
 	}
 
