@@ -5,7 +5,6 @@ const (
 	ASSISTANT = "assistant"
 )
 
-// Error is the error standard response from the API
 type Error struct {
 	Message string      `json:"message,omitempty"`
 	Type    string      `json:"type,omitempty"`
@@ -19,13 +18,6 @@ type Message struct {
 }
 
 type StrArray []string
-
-//   messages=[
-//         {"role": "system", "content": "You are a helpful assistant."},
-//         {"role": "user", "content": "Who won the world series in 2020?"},
-//         {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
-//         {"role": "user", "content": "Where was it played?"}
-//     ]
 
 type CompletionsRequest struct {
 	Model            string            `json:"model,omitempty"`
@@ -68,29 +60,23 @@ type CompletionsResponse struct {
 	Error Error `json:"error,omitempty"`
 }
 
-// 最下面的是最新的
-// Input your question (type `quit` to exit): 都可以
-// map[assistant:[你好，有什么可以帮您的吗？ 您好，请问您想写一篇什么主题的文章呢？] user:[你好 我想写一篇文章]]
-// {"model":"gpt-3.5-turbo","messages":[{"role":"user","content":"都可以"},{"role":"assistant","content":"您好，请问您想写一篇什么主题的文章呢？"},{"role":"user","content":"我想写一篇文章"},{"role":"assistant","content":"你好，有什么可以帮您的吗？"},{"role":"user","content":"你好"}],"max_tokens":1000,"temperature":0.9,"top_p":1,"stop":["Human","AI"],"presence_penalty":0.7}
-// Response status: 200 OK
-// 您好，请问有什么需要帮助的吗？
 func Convert2HistoryMessage(currentHistoryMap map[string][]interface{}, setting ChatSetting) []Message {
-	assistantHistory := ReverseSlice(currentHistoryMap[ASSISTANT])
-	userHistory := ReverseSlice(currentHistoryMap[USER])
+	assistantHistory := currentHistoryMap[ASSISTANT]
+	userHistory := currentHistoryMap[USER]
 	var messages []Message
 	if currentHistoryMap == nil || setting.ModelName != "gpt-3.5-turbo" || len(userHistory) == 0 || len(assistantHistory) == 0 {
 		return messages
 	}
 
 	if len(assistantHistory) == 1 && len(userHistory) == 1 {
-		messages = append(messages, Message{ASSISTANT, assistantHistory[0].(string)})
 		messages = append(messages, Message{USER, userHistory[0].(string)})
+		messages = append(messages, Message{ASSISTANT, assistantHistory[0].(string)})
 		return messages
 	}
 
 	if len(userHistory) == len(assistantHistory) {
-		for index, history := range userHistory[:2] {
-			messages = append(messages, Message{ASSISTANT, assistantHistory[index].(string)}, Message{USER, history.(string)})
+		for index, history := range userHistory[len(userHistory)-2:] {
+			messages = append(messages, Message{USER, history.(string)}, Message{ASSISTANT, assistantHistory[len(assistantHistory)-2:][index].(string)})
 		}
 	}
 

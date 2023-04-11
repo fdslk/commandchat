@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-const FILE_LOCATION = "setting.json"
+const FILE_NAME = "setting.json"
 
 type ChatSetting struct {
 	ModelName string `json:"modelName"`

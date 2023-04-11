@@ -24,7 +24,7 @@ func CreateCompletionsRequest(question string, messages []Message, setting ChatS
 	}
 
 	if setting.ModelName == "gpt-3.5-turbo" {
-		newRequest.Messages = append([]Message{{USER, question}}, messages...)
+		newRequest.Messages = append(messages, Message{USER, question})
 	} else {
 		newRequest.Prompt = question
 	}

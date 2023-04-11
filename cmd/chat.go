@@ -26,7 +26,7 @@ var chatCmd = &cobra.Command{
 		scanner := bufio.NewScanner(os.Stdin)
 
 		quit := false
-		filepath := "Configuration/" + commandchat.FILE_LOCATION
+		filepath := "Configuration/" + commandchat.FILE_NAME
 		setting, err := commandchat.ReadFile(filepath)
 		if err != nil {
 			fmt.Printf("setting reading error %s", err.Error())
