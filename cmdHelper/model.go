@@ -1,4 +1,4 @@
-package commandchat
+package cmdHelper
 
 const (
 	USER      = "user"

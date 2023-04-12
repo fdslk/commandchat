@@ -1,4 +1,10 @@
-package commandchat
+package cmdHelper
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
 
 func ReverseSlice(s []interface{}) []interface{} {
 	reversed := make([]interface{}, len(s))
@@ -15,4 +21,26 @@ func UpdateMap(key string, value string, currentMap map[string][]interface{}) ma
 		currentMap[key] = []interface{}{value}
 	}
 	return currentMap
+}
+
+func ReadJson() (string, error) {
+	fmt.Println("Please Input the setting you want to set (type `save` to save setting): ")
+
+	var lines []string
+
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if line == "" {
+			break
+		}
+		lines = append(lines, line)
+	}
+
+	jsonString := ""
+	for _, line := range lines {
+		jsonString += line
+	}
+
+	return jsonString, nil
 }

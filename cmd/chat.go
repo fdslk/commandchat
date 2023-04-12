@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	commandchat "zqf.com/commandchat/commandchatChannel"
+	"zqf.com/commandchat/cmdHelper"
 )
 
 var currentChatHistory = make(map[string][]interface{})
@@ -26,8 +26,8 @@ var chatCmd = &cobra.Command{
 		scanner := bufio.NewScanner(os.Stdin)
 
 		quit := false
-		filepath := "Configuration/" + commandchat.FILE_NAME
-		setting, err := commandchat.ReadFile(filepath)
+		filepath := "Configuration/" + cmdHelper.FILE_NAME
+		setting, err := cmdHelper.ReadFile(filepath)
 		if err != nil {
 			fmt.Printf("setting reading error %s", err.Error())
 			os.Exit(1)
@@ -47,16 +47,16 @@ var chatCmd = &cobra.Command{
 			case "":
 				continue
 			default:
-				history := commandchat.Convert2HistoryMessage(currentChatHistory, setting)
+				history := cmdHelper.Convert2HistoryMessage(currentChatHistory, setting)
 
-				newRequestBytes, err := commandchat.CreateCompletionsRequest(question, history, setting)
+				newRequestBytes, err := cmdHelper.CreateCompletionsRequest(question, history, setting)
 
 				if err != nil {
 					fmt.Println("error occurred:", err)
 					return
 				}
 
-				rawResponse, err := commandchat.Chat(newRequestBytes, setting)
+				rawResponse, err := cmdHelper.Chat(newRequestBytes, setting)
 
 				if err != nil || rawResponse.Status != "200 OK" {
 					body, _ := io.ReadAll(rawResponse.Body)
@@ -64,7 +64,7 @@ var chatCmd = &cobra.Command{
 					return
 				}
 
-				response, err := commandchat.CreateCompletionsResponse(rawResponse)
+				response, err := cmdHelper.CreateCompletionsResponse(rawResponse)
 
 				if err != nil {
 					fmt.Println("error occurred:", err)
@@ -78,8 +78,8 @@ var chatCmd = &cobra.Command{
 					responseText = response.Choices[0].Text
 				}
 				AIOutPut(responseText)
-				commandchat.UpdateMap(commandchat.USER, question, currentChatHistory)
-				commandchat.UpdateMap(commandchat.ASSISTANT, responseText, currentChatHistory)
+				cmdHelper.UpdateMap(cmdHelper.USER, question, currentChatHistory)
+				cmdHelper.UpdateMap(cmdHelper.ASSISTANT, responseText, currentChatHistory)
 			}
 		}
 	},
