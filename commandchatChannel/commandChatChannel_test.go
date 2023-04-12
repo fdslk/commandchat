@@ -177,3 +177,17 @@ func TestShouldSaveFile(t *testing.T) {
 		t.Errorf("should save file, but get err %s", err.Error())
 	}
 }
+
+func TestIsChatModel(t *testing.T) {
+	expectedSetting := ChatSetting{"gpt-3.5-turbo", "https://api.openai.com/v1/chat/completions"}
+	if !expectedSetting.IsChatModel() {
+		t.Errorf("should be gpt-3.5-turbo")
+	}
+}
+
+func TestIsNotChatModel(t *testing.T) {
+	expectedSetting := ChatSetting{"non-gpt-3.5-turbo", "https://api.openai.com/v1/chat/completions"}
+	if expectedSetting.IsChatModel() {
+		t.Errorf("should be gpt-3.5-turbo")
+	}
+}

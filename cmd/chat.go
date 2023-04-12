@@ -72,7 +72,7 @@ var chatCmd = &cobra.Command{
 				}
 
 				var responseText string
-				if setting.ModelName == "gpt-3.5-turbo" {
+				if setting.IsChatModel() {
 					responseText = response.Choices[0].Message.Content
 				} else {
 					responseText = response.Choices[0].Text

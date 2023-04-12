@@ -63,7 +63,7 @@ type CompletionsResponse struct {
 func Convert2HistoryMessage(currentHistoryMap map[string][]interface{}, setting ChatSetting) []Message {
 	userHistory := currentHistoryMap[USER]
 	var messages []Message
-	if currentHistoryMap == nil || setting.ModelName != "gpt-3.5-turbo" || len(userHistory) == 0 {
+	if currentHistoryMap == nil || !setting.IsChatModel() || len(userHistory) == 0 {
 		return messages
 	}
 

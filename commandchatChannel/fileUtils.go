@@ -41,3 +41,7 @@ func SaveFile(setting interface{}, filePath string) error {
 	}
 	return err
 }
+
+func (setting *ChatSetting) IsChatModel() bool {
+	return setting.ModelName == "gpt-3.5-turbo"
+}
