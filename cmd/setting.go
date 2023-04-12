@@ -4,13 +4,11 @@ Copyright © 2023 zengqiang <zqfangmaster@gmail.com>
 package cmd
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
-	commandchat "zqf.com/commandchat/commandchatChannel"
+	"zqf.com/commandchat/cmdHelper"
 )
 
 // settingCmd represents the setting command
@@ -28,28 +26,30 @@ func init() {
 }
 
 func editSetting() error {
-	settingLoaction := "Configuration/" + commandchat.FILE_NAME
-	scanner := bufio.NewScanner(os.Stdin)
+	settingLoaction := "Configuration/" + cmdHelper.FILE_NAME
 	save := false
-	setting, err := commandchat.ReadFile(settingLoaction)
+	var newSetting string
+	setting, err := cmdHelper.ReadFile(settingLoaction)
 	if err != nil {
 		return err
 	}
 	fmt.Printf("Current setting is %+v\n", setting)
+
 	for !save {
-		fmt.Println("Please Input the setting you want to set (type `save` to save setting): ")
-		if !scanner.Scan() {
-			break
+		newSetting, err = cmdHelper.ReadJson()
+		if err != nil {
+			fmt.Printf("Your current input is invalidate and err is `%s`, please input again\n", err.Error())
+			continue
 		}
-		newSetting := scanner.Text()
 
 		switch newSetting {
 		case "save":
-			commandchat.SaveFile(setting, settingLoaction)
+			cmdHelper.SaveFile(setting, settingLoaction)
 			save = true
 		case "":
 			continue
 		default:
+			fmt.Print(newSetting)
 			err = json.Unmarshal([]byte(newSetting), &setting)
 			if err != nil {
 				fmt.Printf("Your current input is invalidate and err is `%s`, please input again\n", err.Error())

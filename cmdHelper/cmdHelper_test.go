@@ -1,4 +1,4 @@
-package commandchat
+package cmdHelper
 
 import (
 	"bytes"
@@ -65,6 +65,37 @@ func TestShouldReturnEmptyMessageWhenCurrentHistoryNotUserData(t *testing.T) {
 	messages := Convert2HistoryMessage(currentHistory, setting)
 	if len(messages) != 0 {
 		t.Errorf("should return empty message")
+	}
+}
+
+func TestShouldReturnConvertAllCurrentHistoryToMessageWhenUserMessageLessThanTwo(t *testing.T) {
+	currentHistory := map[string][]interface{}{"user": {"test10"}}
+	expectedMessages := []Message{
+		{Role: "user", Content: "test10"},
+	}
+	messages := Convert2HistoryMessage(currentHistory, setting)
+	if len(messages) == 0 {
+		t.Errorf("should not return empty message")
+	}
+
+	if !reflect.DeepEqual(messages, expectedMessages) {
+		t.Errorf("should return expectedMessage %v, got %v", expectedMessages, messages)
+	}
+}
+
+func TestShouldReturnConvertAllCurrentHistoryToMessageWhenUserMessageEqualToTwo(t *testing.T) {
+	currentHistory := map[string][]interface{}{"user": {"test10", "test11"}}
+	expectedMessages := []Message{
+		{Role: "user", Content: "test10"},
+		{Role: "user", Content: "test11"},
+	}
+	messages := Convert2HistoryMessage(currentHistory, setting)
+	if len(messages) == 0 {
+		t.Errorf("should not return empty message")
+	}
+
+	if !reflect.DeepEqual(messages, expectedMessages) {
+		t.Errorf("should return expectedMessage %v, got %v", expectedMessages, messages)
 	}
 }
 
@@ -164,8 +195,8 @@ func TestReturnErrorWhenFileNotExist(t *testing.T) {
 func TestShouldReturnErrorWhenFileIsNotJsonFormat(t *testing.T) {
 	_, err := ReadFile("../Configuration/setting-test.xml")
 
-	if err.Error() != "json: cannot unmarshal string into Go value of type commandchat.ChatSetting" {
-		t.Errorf("should get: %s but got %s", "json: cannot unmarshal string into Go value of type commandchat.ChatSetting", err.Error())
+	if err.Error() != "json: cannot unmarshal string into Go value of type cmdHelper.ChatSetting" {
+		t.Errorf("should get: %s but got %s", "json: cannot unmarshal string into Go value of type cmdHelper.ChatSetting", err.Error())
 	}
 }
 

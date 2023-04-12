@@ -1,4 +1,4 @@
-package commandchat
+package cmdHelper
 
 const (
 	USER      = "user"
@@ -64,6 +64,13 @@ func Convert2HistoryMessage(currentHistoryMap map[string][]interface{}, setting 
 	userHistory := currentHistoryMap[USER]
 	var messages []Message
 	if currentHistoryMap == nil || !setting.IsChatModel() || len(userHistory) == 0 {
+		return messages
+	}
+
+	if len(userHistory) <= 2 {
+		for _, history := range userHistory {
+			messages = append(messages, Message{USER, history.(string)})
+		}
 		return messages
 	}
 
