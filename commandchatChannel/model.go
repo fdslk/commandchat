@@ -61,23 +61,14 @@ type CompletionsResponse struct {
 }
 
 func Convert2HistoryMessage(currentHistoryMap map[string][]interface{}, setting ChatSetting) []Message {
-	assistantHistory := currentHistoryMap[ASSISTANT]
 	userHistory := currentHistoryMap[USER]
 	var messages []Message
-	if currentHistoryMap == nil || setting.ModelName != "gpt-3.5-turbo" || len(userHistory) == 0 || len(assistantHistory) == 0 {
+	if currentHistoryMap == nil || setting.ModelName != "gpt-3.5-turbo" || len(userHistory) == 0 {
 		return messages
 	}
 
-	if len(assistantHistory) == 1 && len(userHistory) == 1 {
-		messages = append(messages, Message{USER, userHistory[0].(string)})
-		messages = append(messages, Message{ASSISTANT, assistantHistory[0].(string)})
-		return messages
-	}
-
-	if len(userHistory) == len(assistantHistory) {
-		for index, history := range userHistory[len(userHistory)-2:] {
-			messages = append(messages, Message{USER, history.(string)}, Message{ASSISTANT, assistantHistory[len(assistantHistory)-2:][index].(string)})
-		}
+	for _, history := range userHistory[len(userHistory)-2:] {
+		messages = append(messages, Message{USER, history.(string)})
 	}
 
 	return messages
