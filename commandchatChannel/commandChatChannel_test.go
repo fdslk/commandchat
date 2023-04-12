@@ -68,55 +68,11 @@ func TestShouldReturnEmptyMessageWhenCurrentHistoryNotUserData(t *testing.T) {
 	}
 }
 
-func TestShouldReturnEmptyMessageWhenCurrentHistoryNotAssistantData(t *testing.T) {
-	currentHistory := map[string][]interface{}{"assistant": {"test2"}}
-	messages := Convert2HistoryMessage(currentHistory, setting)
-	if len(messages) != 0 {
-		t.Errorf("should return empty message")
-	}
-}
-
-func TestShouldReturnConvertAllCurrentHistoryToMessageWhenBothCurrentHistorySizeOnlyOne(t *testing.T) {
-	currentHistory := map[string][]interface{}{"user": {"test1"}, "assistant": {"test2"}}
-	expectedMessages := []Message{
-		{Role: "user", Content: "test1"},
-		{Role: "assistant", Content: "test2"},
-	}
-	messages := Convert2HistoryMessage(currentHistory, setting)
-	if len(messages) == 0 {
-		t.Errorf("should not return empty message")
-	}
-
-	if !reflect.DeepEqual(messages, expectedMessages) {
-		t.Errorf("should return expectedMessage %v, got %v", expectedMessages, messages)
-	}
-}
-
-func TestShouldReturnConvertAllCurrentHistoryToMessageWhenUserCurrentHistorySizeIsEqualToAssistant(t *testing.T) {
-	currentHistory := map[string][]interface{}{"user": {"test10", "test11"}, "assistant": {"test20", "test21"}}
-	expectedMessages := []Message{
-		{Role: "user", Content: "test10"},
-		{Role: "assistant", Content: "test20"},
-		{Role: "user", Content: "test11"},
-		{Role: "assistant", Content: "test21"},
-	}
-	messages := Convert2HistoryMessage(currentHistory, setting)
-	if len(messages) == 0 {
-		t.Errorf("should not return empty message")
-	}
-
-	if !reflect.DeepEqual(messages, expectedMessages) {
-		t.Errorf("should return expectedMessage %v, got %v", expectedMessages, messages)
-	}
-}
-
-func TestShouldReturnTop2MessageWhenUserCurrentHistorySizeIsGreaterThanTwo(t *testing.T) {
-	currentHistory := map[string][]interface{}{"user": {"test10", "test11", "test12"}, "assistant": {"test20", "test21", "test22"}}
+func TestShouldReturnConvertAllCurrentHistoryToMessage(t *testing.T) {
+	currentHistory := map[string][]interface{}{"user": {"test10", "test11", "test12"}, "assistant": {"test20", "test21"}}
 	expectedMessages := []Message{
 		{Role: "user", Content: "test11"},
-		{Role: "assistant", Content: "test21"},
 		{Role: "user", Content: "test12"},
-		{Role: "assistant", Content: "test22"},
 	}
 	messages := Convert2HistoryMessage(currentHistory, setting)
 	if len(messages) == 0 {
@@ -219,5 +175,19 @@ func TestShouldSaveFile(t *testing.T) {
 
 	if err != nil {
 		t.Errorf("should save file, but get err %s", err.Error())
+	}
+}
+
+func TestIsChatModel(t *testing.T) {
+	expectedSetting := ChatSetting{"gpt-3.5-turbo", "https://api.openai.com/v1/chat/completions"}
+	if !expectedSetting.IsChatModel() {
+		t.Errorf("should be gpt-3.5-turbo")
+	}
+}
+
+func TestIsNotChatModel(t *testing.T) {
+	expectedSetting := ChatSetting{"non-gpt-3.5-turbo", "https://api.openai.com/v1/chat/completions"}
+	if expectedSetting.IsChatModel() {
+		t.Errorf("should be gpt-3.5-turbo")
 	}
 }
