@@ -119,13 +119,10 @@ func TestShouldCreateCompletionRequestWithoutPromptWhenModelIsgpt3Dot5turbo(t *t
 	var request CompletionsRequest
 	setting := ChatSetting{"gpt-3.5-turbo", "https://api.openai.com/v1/chat/completions"}
 	expectedCompletionsRequest := CompletionsRequest{
-		Model:       "gpt-3.5-turbo",
-		Messages:    []Message{{"user", "test"}},
-		TopP:        1,
-		Temperature: 0.9,
-		Stop: StrArray{
-			"Human", "AI",
-		},
+		Model:            "gpt-3.5-turbo",
+		Messages:         []Message{{"user", "test"}},
+		TopP:             1,
+		Temperature:      0.9,
 		MaxTokens:        1000,
 		FrequencyPenalty: 0.0,
 		PresencePenalty:  0.7,
@@ -142,12 +139,9 @@ func TestShouldCreateCompletionRequestWithoutMessageWhenModelIsNotgpt3Dot5turbo(
 	var request CompletionsRequest
 	setting := ChatSetting{"non-gpt-3.5-turbo", "https://api.openai.com/v1/chat/completions"}
 	expectedCompletionsRequest := CompletionsRequest{
-		Model:       "non-gpt-3.5-turbo",
-		TopP:        1,
-		Temperature: 0.9,
-		Stop: StrArray{
-			"Human", "AI",
-		},
+		Model:            "non-gpt-3.5-turbo",
+		TopP:             1,
+		Temperature:      0.9,
 		Prompt:           "test",
 		MaxTokens:        1000,
 		FrequencyPenalty: 0.0,
