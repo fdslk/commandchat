@@ -12,12 +12,9 @@ import (
 func CreateCompletionsRequest(question string, messages []Message, setting ChatSetting) ([]byte, error) {
 
 	newRequest := CompletionsRequest{
-		Model:       setting.ModelName,
-		TopP:        1,
-		Temperature: 0.9,
-		Stop: StrArray{
-			"Human", "AI",
-		},
+		Model:            setting.ModelName,
+		TopP:             1,
+		Temperature:      0.9,
 		MaxTokens:        1000,
 		FrequencyPenalty: 0.0,
 		PresencePenalty:  0.7,
