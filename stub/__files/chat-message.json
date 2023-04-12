@@ -1,21 +1,19 @@
 {
-    "id": "chatcmpl-73jPBL61K3AcKcnUvCOueQxQafs4L",
+    "id": "chatcmpl-74OP0qC6sGLkVT3Z79reQ4n0GE05L",
     "object": "chat.completion",
-    "created": 1681123877,
+    "created": 1681281470,
     "model": "gpt-3.5-turbo-0301",
     "usage": {
-        "prompt_tokens": 14,
-        "completion_tokens": 3,
-        "total_tokens": 17
+        "prompt_tokens": 12,
+        "completion_tokens": 28,
+        "total_tokens": 40
     },
-    "choices": [
-        {
-            "message": {
-                "role": "assistant",
-                "content": "\n\nHello there, how may I assist you today?"
-            },
-            "finish_reason": "stop",
-            "index": 0
-        }
-    ]
+    "choices": [{
+        "message": {
+            "role": "assistant",
+            "content": "As an AI language model, I don't have personal opinions or beliefs. I exist to assist and provide information based on data and facts."
+        },
+        "finish_reason": "stop",
+        "index": 0
+    }]
 }

@@ -9,7 +9,6 @@ import (
 
 	"github.com/spf13/cobra"
 	"zqf.com/commandchat/cmdHelper"
-	commandchat "zqf.com/commandchat/cmdHelper"
 )
 
 // settingCmd represents the setting command
@@ -27,10 +26,10 @@ func init() {
 }
 
 func editSetting() error {
-	settingLoaction := "Configuration/" + commandchat.FILE_NAME
+	settingLoaction := "Configuration/" + cmdHelper.FILE_NAME
 	save := false
 	var newSetting string
-	setting, err := commandchat.ReadFile(settingLoaction)
+	setting, err := cmdHelper.ReadFile(settingLoaction)
 	if err != nil {
 		return err
 	}
@@ -45,7 +44,7 @@ func editSetting() error {
 
 		switch newSetting {
 		case "save":
-			commandchat.SaveFile(setting, settingLoaction)
+			cmdHelper.SaveFile(setting, settingLoaction)
 			save = true
 		case "":
 			continue

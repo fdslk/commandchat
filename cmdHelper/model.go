@@ -67,6 +67,13 @@ func Convert2HistoryMessage(currentHistoryMap map[string][]interface{}, setting 
 		return messages
 	}
 
+	if len(userHistory) <= 2 {
+		for _, history := range userHistory {
+			messages = append(messages, Message{USER, history.(string)})
+		}
+		return messages
+	}
+
 	for _, history := range userHistory[len(userHistory)-2:] {
 		messages = append(messages, Message{USER, history.(string)})
 	}

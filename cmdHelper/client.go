@@ -23,7 +23,7 @@ func CreateCompletionsRequest(question string, messages []Message, setting ChatS
 		PresencePenalty:  0.7,
 	}
 
-	if setting.ModelName == "gpt-3.5-turbo" {
+	if setting.IsChatModel() {
 		newRequest.Messages = append(messages, Message{USER, question})
 	} else {
 		newRequest.Prompt = question
