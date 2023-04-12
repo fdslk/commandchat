@@ -6,7 +6,9 @@
 
 * It is a command line tool that can be used to chat with GPT, which will send messages with the latest two conversation record
 * It is based on Golang
+
 ## How to run it in local
+
 * run `go run . chat`
 
 ## How to use it
@@ -23,7 +25,7 @@
   }
   ```
 
-![usage record](https://user-images.githubusercontent.com/6279298/231336901-d82f2707-ca54-4fbf-a928-30203a4a687c.gif)
+![output](https://user-images.githubusercontent.com/6279298/231410956-5555a391-1557-406f-a088-a15e9accc25c.gif)
 
 ## Development tip
 
