@@ -26,7 +26,7 @@ func init() {
 }
 
 func editSetting() error {
-	settingLoaction := "Configuration/" + cmdHelper.FILE_NAME
+	settingLoaction := cmdHelper.CONFIGURATIONPATH + cmdHelper.FILE_NAME
 	save := false
 	var newSetting string
 	setting, err := cmdHelper.ReadFile(settingLoaction)
@@ -44,7 +44,7 @@ func editSetting() error {
 
 		switch newSetting {
 		case "save":
-			cmdHelper.SaveFile(setting, settingLoaction)
+			cmdHelper.SaveFile(setting, cmdHelper.CONFIGURATIONPATH, cmdHelper.FILE_NAME)
 			save = true
 		case "":
 			continue

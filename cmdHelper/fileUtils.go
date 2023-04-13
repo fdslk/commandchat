@@ -2,12 +2,17 @@ package cmdHelper
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 )
 
-const FILE_NAME = "setting.json"
+const (
+	FILE_NAME         = "setting.json"
+	CONFIGURATIONPATH = "Configuration/"
+	CHATHISTORYPATH   = "historys/"
+)
 
 type ChatSetting struct {
 	ModelName string `json:"modelName"`
@@ -30,12 +35,33 @@ func ReadFile(filePath string) (ChatSetting, error) {
 	return setting, nil
 }
 
-func SaveFile(setting interface{}, filePath string) error {
-	bytes, err := json.Marshal(setting)
+func SaveFile(data interface{}, filePath string, fileName string) error {
+	_, err := os.Stat(filePath)
+
+	if os.IsNotExist(err) {
+		// 创建目录
+		err = os.MkdirAll(filePath, 0755)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+
+		// 创建文件
+		file, err := os.Create(filePath + fileName)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		defer file.Close()
+
+		fmt.Println("File created:", filePath+fileName)
+	}
+
+	bytes, err := json.Marshal(data)
 	if err != nil {
 		panic(err)
 	}
-	err = ioutil.WriteFile(filePath, bytes, 0644)
+	err = ioutil.WriteFile(filePath+fileName, bytes, 0644)
 	if err != nil {
 		panic(err)
 	}
