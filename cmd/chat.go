@@ -16,6 +16,11 @@ import (
 
 var currentChatHistory = make(map[string][]interface{})
 
+type chatHistory struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
 // chatCmd represents the chat command
 var chatCmd = &cobra.Command{
 	Use:   "chat",
@@ -26,7 +31,7 @@ var chatCmd = &cobra.Command{
 		scanner := bufio.NewScanner(os.Stdin)
 
 		quit := false
-		filepath := "Configuration/" + cmdHelper.FILE_NAME
+		filepath := cmdHelper.CONFIGURATIONPATH + cmdHelper.FILE_NAME
 		setting, err := cmdHelper.ReadFile(filepath)
 		if err != nil {
 			fmt.Printf("setting reading error %s", err.Error())
@@ -44,6 +49,19 @@ var chatCmd = &cobra.Command{
 			switch question {
 			case "quit":
 				quit = true
+				userHistory := currentChatHistory[cmdHelper.USER]
+				assistantHistory := currentChatHistory[cmdHelper.ASSISTANT]
+				if len(userHistory) > 0 {
+					fmt.Print("The first sentence in the current chat history\n")
+
+					var historys []chatHistory
+					for index, content := range userHistory {
+						historys = append(historys, chatHistory{cmdHelper.USER, content.(string)})
+						historys = append(historys, chatHistory{cmdHelper.ASSISTANT, assistantHistory[index].(string)})
+					}
+
+					cmdHelper.SaveFile(historys, cmdHelper.CHATHISTORYPATH, userHistory[0].(string)+".json")
+				}
 			case "":
 				continue
 			default:

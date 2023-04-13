@@ -196,7 +196,7 @@ func TestShouldReturnErrorWhenFileIsNotJsonFormat(t *testing.T) {
 
 func TestShouldSaveFile(t *testing.T) {
 	expectedSetting := ChatSetting{"gpt-3.5-turbo", "https://api.openai.com/v1/chat/completions"}
-	err := SaveFile(expectedSetting, "../setting-test.json")
+	err := SaveFile(expectedSetting, "../", "setting-test.json")
 
 	if err != nil {
 		t.Errorf("should save file, but get err %s", err.Error())
