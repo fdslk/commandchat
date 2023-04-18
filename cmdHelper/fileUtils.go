@@ -3,6 +3,7 @@ package cmdHelper
 import (
 	"encoding/json"
 	"fmt"
+	"image"
 	"io/ioutil"
 	"log"
 	"os"
@@ -33,6 +34,16 @@ func ReadFile(filePath string) (ChatSetting, error) {
 		return setting, err
 	}
 	return setting, nil
+}
+
+func LoadImageFile(filename string) (image.Image, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	img, _, err := image.Decode(file)
+	return img, err
 }
 
 func SaveFile(data interface{}, filePath string, fileName string) error {

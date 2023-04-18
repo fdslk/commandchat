@@ -1,0 +1,10 @@
+{
+    "request": {
+        "method": "POST",
+        "urlPath": "/v1/images/generations"
+    },
+    "response": {
+        "status": 200,
+        "bodyFileName": "../__files/chat-message.json"
+    }
+}
