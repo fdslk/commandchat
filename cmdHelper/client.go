@@ -55,7 +55,7 @@ func CreateCompletionsResponse(rawResponse http.Response) (response CompletionsR
 
 func Chat(requestBytes []byte, setting ChatSetting) (http.Response, error) {
 	apiKey := os.Getenv("API_KEY")
-	request, err := http.NewRequest(http.MethodPost, setting.ApiUrl, bytes.NewBuffer(requestBytes))
+	request, err := http.NewRequest(http.MethodPost, setting., bytes.NewBuffer(requestBytes))
 
 	if err != nil {
 		fmt.Println("Error sending request:", err)

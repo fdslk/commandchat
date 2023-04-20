@@ -1,4 +1,5 @@
 {
     "modelName": "gpt-3.5-turbo",
-    "apiUrl": "https://api.openai.com/v1/chat/completions"
+    "apiUrl": "https://api.openai.com/v1/chat/completions",
+    "imageGenerateApiUrl": "https://api.openai.com/v1/images/generations"
 }

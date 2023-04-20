@@ -28,6 +28,7 @@ type CompletionsRequest struct {
 	Temperature      float64           `json:"temperature,omitempty"`
 	TopP             float64           `json:"top_p,omitempty"`
 	N                int               `json:"n,omitempty"`
+	Size             string            `json:"size,omitempty"`
 	Stream           bool              `json:"stream,omitempty"`
 	LogProbs         int               `json:"logprobs,omitempty"`
 	Echo             bool              `json:"echo,omitempty"`
@@ -37,6 +38,7 @@ type CompletionsRequest struct {
 	BestOf           int               `json:"best_of,omitempty"`
 	LogitBias        map[string]string `json:"logit_bias,omitempty"`
 	User             string            `json:"user,omitempty"`
+	ResponseFormat   string            `json:"response_format,omitempty"`
 }
 
 type CompletionsResponse struct {
@@ -56,6 +58,9 @@ type CompletionsResponse struct {
 		CompletionTokens int `json:"completion_tokens,omitempty"`
 		TotalTokens      int `json:"total_tokens,omitempty"`
 	} `json:"usage,omitempty"`
+	Data []struct {
+		Url string `json:"url,omitempty"`
+	} `json:"data,omitempty"`
 
 	Error Error `json:"error,omitempty"`
 }

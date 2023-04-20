@@ -16,8 +16,9 @@ const (
 )
 
 type ChatSetting struct {
-	ModelName string `json:"modelName"`
-	ApiUrl    string `json:"apiUrl"`
+	ModelName           string `json:"modelName"`
+	ApiUrl              string `json:"apiUrl"`
+	ImageGenerateApiUrl string `json:"imageGenerateApiUrl"`
 }
 
 func ReadFile(filePath string) (ChatSetting, error) {
